@@ -1,4 +1,3 @@
-# File: src/task2_chunking_embedding.py
 import pandas as pd
 import os
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -18,10 +17,10 @@ METADATA_FILE = os.path.join(VECTOR_DIR, "metadata.pkl")
 # Create vector_store directory
 os.makedirs(VECTOR_DIR, exist_ok=True)
 
-# Step 1: Load filtered dataset (sample 10,000 rows)
+# Step 1: Load filtered dataset
 print("=== Loading Filtered Dataset ===")
 try:
-    df = pd.read_csv(INPUT_FILE, nrows=10000)  # Sample 10,000 rows
+    df = pd.read_csv(INPUT_FILE)
     print(f"Dataset loaded successfully. Shape: {df.shape}")
     print(f"Columns: {list(df.columns)}")
 except Exception as e:
@@ -45,7 +44,7 @@ for idx, row in df.iterrows():
     narrative = row['cleaned_narrative']
     split_texts = text_splitter.split_text(narrative)
     chunks.extend(split_texts)
-    metadata.extend([{'complaint_id': complaint_id, 'product': product}] * len(split_texts))
+    metadata.extend([{'complaint_id': complaint_id, 'product': product, 'chunk': text} for text in split_texts])
 
 print(f"Total chunks created: {len(chunks)}")
 print("\nSample chunks:")
